@@ -265,6 +265,25 @@ body{display:flex!important;align-items:center!important;justify-content:center!
 .layout,.layout.expanded{display:block!important;height:auto!important;min-height:0!important}
 .sidebar,.sidebar-overlay,.hamburger{display:none!important}
 .main{padding:16px 16px 28px!important;gap:18px!important;height:auto!important;overflow:visible!important}
+/* Force mobile layout — media queries don't fire at 1440px viewport */
+.main-grid{grid-template-columns:1fr!important}
+.metrics-left{grid-template-columns:1fr 1fr!important}
+.main-left,.main-right{display:contents!important}
+.hero{flex-direction:column!important;gap:10px!important}
+.hero-right{flex-wrap:wrap!important;gap:8px!important}
+.greeting-name{font-size:24px!important;letter-spacing:-.5px!important}
+.sec-metrics{order:1!important}
+.sec-metric-right{order:2!important}
+.sec-performance{order:3!important}
+.sec-news{order:4!important}
+.sec-vertraege{order:5!important}
+.sec-nachrichten{order:6!important}
+.sec-dokumente{order:7!important}
+.card.bg{padding:18px!important}
+#chart-wrap{margin:0 -18px!important}
+.ss-grid{grid-template-columns:1fr 1fr!important}
+.m-value{font-size:22px!important}
+.advisor-dropdown{position:fixed!important;top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;right:auto!important;min-width:280px!important}
 .ios-shell{width:393px;height:852px;background:var(--bg0);border-radius:50px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 0 0 1.5px rgba(255,255,255,.1),0 0 0 11px #1c1c1e,0 0 0 12.5px rgba(255,255,255,.06),0 44px 110px rgba(0,0,0,.7),0 18px 50px rgba(0,0,0,.4);flex-shrink:0}
 .ios-di{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:126px;height:37px;background:#000;border-radius:20px;z-index:300;pointer-events:none}
 .ios-sb{height:54px;padding:14px 26px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:200}
@@ -365,7 +384,7 @@ body{display:flex!important;align-items:center!important;justify-content:center!
 
       <!-- Performance -->
       <div class="card bg sec-performance" style="overflow:hidden;padding-bottom:0">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:16px"><div class="card-title" style="margin-bottom:0">Vermögensentwicklung</div><span style="font-family:var(--font-brand);font-size:15px;font-weight:700;color:#15803d;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:4px 12px;letter-spacing:-.2px">↑ +4,2 %</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding-bottom:16px"><div class="card-title" style="margin-bottom:0">Vermögensentwicklung</div><span style="font-family:var(--font-brand);font-size:15px;font-weight:700;color:#15803d;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:4px 12px;letter-spacing:-.2px">↑ +4,2 %</span></div>
         <div id="chart-wrap" style="margin:0 -32px">
           <svg id="perf-svg" style="display:block;width:100%">
             <g id="chart-grid"></g>

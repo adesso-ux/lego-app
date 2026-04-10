@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nachrichten – LEGO Lebensversicherung</title>
+<link href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@400;500;600;700;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#f5f5f8;overflow:hidden}
+
+:root{
+  --primary:#e1ffa8;
+  --primary-dark:#b8d96e;
+  --secondary:#87c4ff;
+  --secondary-dark:#181348;
+  --tertiary:#ffe3e8;
+  --vibrant:#fe4c1c;
+  --bg0:#f5f5f8;
+  --bg1:#ffffff;
+  --bg2:#f8f8fb;
+  --bg3:#efeff4;
+  --border:#e2e2ec;
+  --text1:#0e0c2a;
+  --text2:#5a5870;
+  --text3:#a8a6bc;
+  --font-brand:'Parkinsans',system-ui,sans-serif;
+  --font-text:'Roboto',system-ui,sans-serif;
+}
+
+body{font-family:var(--font-text);color:var(--text1);font-size:13px}
+
+.layout{display:grid;grid-template-columns:72px 1fr;height:100vh;transition:grid-template-columns .28s cubic-bezier(.4,0,.2,1)}
+.layout.expanded{grid-template-columns:230px 1fr}
+
+.sidebar{background:var(--secondary-dark);display:flex;flex-direction:column;align-items:flex-start;padding:20px 0;gap:3px;overflow:hidden;width:100%}
+
+.logo-area{display:flex;align-items:center;gap:10px;padding:0 18px;margin-bottom:20px;white-space:nowrap;overflow:hidden}
+.logo-mark{display:flex;gap:5px;flex-shrink:0;align-items:center}
+.logo-hex{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.lh1{background:var(--primary)}.lh2{background:var(--secondary)}.lh3{background:var(--vibrant)}
+.logo-text{font-family:var(--font-brand);font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px;opacity:0;transition:opacity .2s;white-space:nowrap}
+.logo-subtext{font-size:9px;color:rgba(135,196,255,.6);letter-spacing:1px;text-transform:uppercase;opacity:0;transition:opacity .2s;white-space:nowrap}
+.layout.expanded .logo-text,.layout.expanded .logo-subtext{opacity:1}
+
+.nav-section{font-size:9px;font-family:var(--font-brand);color:rgba(255,255,255,.25);letter-spacing:1.2px;text-transform:uppercase;padding:10px 18px 3px;white-space:nowrap;opacity:0;transition:opacity .15s}
+.layout.expanded .nav-section{opacity:1;transition:opacity .2s .08s}
+
+.nav-btn{width:100%;height:44px;border-radius:0;display:flex;align-items:center;gap:12px;padding:0 18px;cursor:pointer;color:rgba(255,255,255,.5);transition:all .18s;position:relative;white-space:nowrap;border-left:3px solid transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+.nav-btn.active{background:rgba(225,255,168,.08);color:var(--primary);border-left-color:var(--primary)}
+.nb{position:absolute;top:10px;left:30px;width:7px;height:7px;border-radius:50%;background:var(--vibrant);border:2px solid var(--secondary-dark)}
+.nav-icon-wrap{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-label{font-family:var(--font-brand);font-size:13px;font-weight:500;opacity:0;transition:opacity .12s;pointer-events:none;white-space:nowrap}
+.layout.expanded .nav-label{opacity:1;transition:opacity .2s .1s}
+.badge-label{margin-left:auto;background:var(--vibrant);color:#fff;font-size:10px;border-radius:100px;padding:1px 7px;font-weight:600;opacity:0;transition:opacity .12s;font-family:var(--font-brand)}
+.layout.expanded .badge-label{opacity:1;transition:opacity .2s .1s}
+
+.nav-sep{width:calc(100% - 36px);height:1px;background:rgba(255,255,255,.08);margin:6px 18px}
+
+.toggle-btn{width:100%;height:44px;margin:0 0 10px;border-radius:0;background:transparent;border:none;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:rgba(255,255,255,.4);font-size:12px;transition:all .2s;flex-shrink:0;padding:0 18px}
+.toggle-btn:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+.layout.expanded .toggle-btn{width:calc(100% - 36px);margin:0 18px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);justify-content:flex-start;padding:0 12px}
+.layout.expanded .toggle-btn:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8)}
+.toggle-icon{transition:transform .28s;flex-shrink:0}
+.layout.expanded .toggle-icon{transform:rotate(180deg)}
+.toggle-label{opacity:0;max-width:0;overflow:hidden;transition:opacity .12s,max-width .12s;white-space:nowrap;font-family:var(--font-brand);font-weight:500}
+.layout.expanded .toggle-label{opacity:1;max-width:200px;transition:opacity .2s .1s,max-width .2s .1s}
+
+.user-area{display:flex;align-items:center;gap:10px;padding:0 18px;margin-top:auto;white-space:nowrap;overflow:hidden;width:100%}
+.user-dot{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--vibrant),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;font-family:var(--font-brand)}
+.user-info{opacity:0;transition:opacity .2s}
+.layout.expanded .user-info{opacity:1;transition:opacity .2s .1s}
+.user-name{font-size:13px;font-weight:600;color:#fff;font-family:var(--font-brand)}
+.user-email{font-size:11px;color:rgba(255,255,255,.35)}
+
+/* Main */
+.main{overflow:hidden;display:flex;flex-direction:column;height:100vh}
+.page-header{padding:28px 34px 20px;flex-shrink:0;display:flex;justify-content:space-between;align-items:flex-start}
+.page-title{font-family:var(--font-brand);font-size:28px;font-weight:800;color:var(--text1);letter-spacing:-.5px}
+.page-sub{font-size:13px;color:var(--text2);margin-top:4px}
+
+.compose-btn{background:var(--secondary-dark);color:var(--primary);border:none;border-radius:14px;padding:10px 20px;font-family:var(--font-brand);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:opacity .18s}
+.compose-btn:hover{opacity:.85}
+
+/* Split panel */
+.split-panel{display:grid;grid-template-columns:340px 1fr;flex:1;overflow:hidden;gap:0;padding:0 34px 28px}
+.msg-list-panel{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border);padding-right:20px}
+.msg-detail-panel{display:flex;flex-direction:column;overflow:hidden;padding-left:24px}
+
+/* Filter tabs */
+.filter-tabs{display:flex;gap:4px;margin-bottom:16px;flex-shrink:0}
+.ftab{background:none;border:1px solid var(--border);border-radius:100px;padding:5px 14px;font-family:var(--font-brand);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s}
+.ftab.active{background:var(--secondary-dark);color:var(--primary);border-color:var(--secondary-dark)}
+.ftab:hover:not(.active){background:var(--bg3)}
+
+/* Search */
+.msg-search{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:9px 14px;margin-bottom:14px;flex-shrink:0}
+.msg-search input{background:none;border:none;outline:none;font-family:var(--font-text);font-size:13px;color:var(--text1);width:100%}
+.msg-search input::placeholder{color:var(--text3)}
+
+/* Message list */
+.msg-list{overflow-y:auto;flex:1}
+.msg-item{display:flex;gap:12px;padding:12px 10px;border-radius:14px;cursor:pointer;transition:background .15s;border:2px solid transparent}
+.msg-item:hover{background:var(--bg2)}
+.msg-item.active{background:var(--bg2);border-color:var(--border)}
+.msg-item.unread .msg-sender-name{font-weight:700;color:var(--text1)}
+.msg-av{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:var(--font-brand);color:#fff}
+.msg-item-right{flex:1;min-width:0}
+.msg-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.msg-sender-name{font-size:13px;color:var(--text2);font-family:var(--font-text);transition:none}
+.msg-time-stamp{font-size:11px;color:var(--text3);white-space:nowrap;font-family:var(--font-text)}
+.msg-subject{font-size:13px;font-weight:500;color:var(--text1);font-family:var(--font-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.msg-preview-text{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-text)}
+.unread-indicator{width:8px;height:8px;border-radius:50%;background:var(--vibrant);flex-shrink:0;margin-top:4px}
+
+/* Detail panel */
+.detail-header{flex-shrink:0;margin-bottom:20px}
+.detail-subject{font-family:var(--font-brand);font-size:20px;font-weight:700;color:var(--text1);letter-spacing:-.3px;margin-bottom:14px}
+.detail-meta{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg2);border-radius:14px;margin-bottom:16px}
+.detail-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:var(--font-brand);color:#fff;flex-shrink:0}
+.detail-sender{font-family:var(--font-brand);font-size:14px;font-weight:700;color:var(--text1)}
+.detail-sender-role{font-size:12px;color:var(--text2);margin-top:2px}
+.detail-date-label{font-size:12px;color:var(--text3);margin-left:auto;font-family:var(--font-text)}
+
+.detail-body{flex:1;overflow-y:auto;padding-right:4px}
+.detail-text{font-size:14px;line-height:1.7;color:var(--text1);font-family:var(--font-text)}
+.detail-text p{margin-bottom:14px}
+.detail-text p:last-child{margin-bottom:0}
+
+.detail-attachment{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-top:18px;cursor:pointer;transition:background .15s}
+.detail-attachment:hover{background:var(--bg3)}
+.att-icon{width:36px;height:36px;background:#e8f4ff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#1d4ed8;font-family:var(--font-brand);flex-shrink:0}
+.att-name{font-size:13px;font-weight:500;color:var(--text1);font-family:var(--font-text)}
+.att-size{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--font-text)}
+.att-dl{margin-left:auto;font-size:13px;color:var(--secondary-dark);font-weight:700;font-family:var(--font-brand)}
+
+.reply-area{flex-shrink:0;margin-top:20px;border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.reply-input{width:100%;border:none;outline:none;padding:14px 16px;font-family:var(--font-text);font-size:13px;color:var(--text1);background:var(--bg1);resize:none;height:80px}
+.reply-footer{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg2);border-top:1px solid var(--border)}
+.reply-btn{background:var(--secondary-dark);color:var(--primary);border:none;border-radius:10px;padding:8px 20px;font-family:var(--font-brand);font-size:13px;font-weight:600;cursor:pointer;transition:opacity .18s}
+.reply-btn:hover{opacity:.85}
+.reply-hint{font-size:11px;color:var(--text3);font-family:var(--font-text)}
+
+.hamburger{display:none;width:38px;height:38px;background:var(--bg1);border:1px solid var(--border);border-radius:12px;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:99}
+.sidebar-overlay.open{display:block}
+
+@media(max-width:900px){
+  html,body{overflow:auto;height:auto}
+  .layout,.layout.expanded{grid-template-columns:1fr;height:auto;min-height:100vh}
+  .sidebar{position:fixed;left:-230px;top:0;bottom:0;width:230px;z-index:100;transition:left .28s cubic-bezier(.4,0,.2,1)}
+  .sidebar.mobile-open{left:0}
+  .hamburger{display:flex}
+  .main{height:auto;overflow:visible}
+  .split-panel{grid-template-columns:1fr;padding:0 18px 20px;gap:20px}
+  .msg-list-panel{border-right:none;padding-right:0;max-height:400px}
+  .msg-detail-panel{padding-left:0}
+  .page-header{padding:20px 18px 14px;flex-direction:column;gap:12px}
+}
+
+/* ── iOS Simulator ── */
+html,body{height:auto!important;overflow:visible!important}
+body{display:flex!important;align-items:center!important;justify-content:center!important;padding:24px 16px!important;min-height:100vh!important;background:radial-gradient(ellipse at 35% 25%,#1a1f40 0%,#0d0d18 70%)!important}
+.layout,.layout.expanded{display:block!important;height:auto!important;min-height:0!important}
+.sidebar,.sidebar-overlay,.hamburger{display:none!important}
+.main{padding:0!important;gap:0!important;height:auto!important;overflow:visible!important;display:block!important}
+.split-panel{display:block!important;padding:0!important;grid-template-columns:none!important;height:auto!important;overflow:visible!important}
+.msg-list-panel{border-right:none!important;padding-right:0!important;max-height:none!important;overflow:visible!important;flex:none!important}
+.msg-detail-panel{display:none;padding-left:0!important;flex-direction:column!important;padding:16px!important}
+.page-header{padding:16px 16px 12px!important;flex-direction:column!important;gap:8px!important}
+.ios-shell{width:393px;height:852px;background:var(--bg0);border-radius:50px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 0 0 1.5px rgba(255,255,255,.1),0 0 0 11px #1c1c1e,0 0 0 12.5px rgba(255,255,255,.06),0 44px 110px rgba(0,0,0,.7),0 18px 50px rgba(0,0,0,.4);flex-shrink:0}
+.ios-di{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:126px;height:37px;background:#000;border-radius:20px;z-index:300;pointer-events:none}
+.ios-sb{height:54px;padding:14px 26px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:200}
+.ios-sb-time{font-size:15px;font-weight:700;color:var(--text1);font-family:-apple-system,sans-serif;letter-spacing:-.3px}
+.ios-sb-icons{display:flex;align-items:center;gap:5px}
+.ios-nb{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(248,248,251,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:.5px solid rgba(0,0,0,.14);flex-shrink:0;z-index:150}
+.ios-nb-side{min-width:70px;display:flex;align-items:center}
+.ios-nb-side.right{justify-content:flex-end}
+.ios-nb-title{font-size:17px;font-weight:600;color:var(--text1);font-family:-apple-system,sans-serif;letter-spacing:-.2px;text-align:center;flex:1}
+.ios-nb-back{display:flex;align-items:center;gap:2px;color:#181348;font-family:-apple-system,sans-serif;font-size:17px;cursor:pointer;text-decoration:none;font-weight:400;background:none;border:none;padding:0}
+.ios-nb-action{display:flex;align-items:center;color:#181348;cursor:pointer;background:none;border:none;padding:4px}
+.ios-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.ios-content::-webkit-scrollbar{display:none}
+.ios-content{scrollbar-width:none}
+.ios-tb{height:82px;padding:8px 0 18px;display:flex;align-items:flex-start;justify-content:space-around;background:rgba(248,248,251,.94);border-top:.5px solid rgba(0,0,0,.16);flex-shrink:0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.ios-tab{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#8e8e93;font-size:10px;font-family:-apple-system,sans-serif;font-weight:500;min-width:60px;position:relative;transition:color .15s}
+.ios-tab.active{color:#181348}
+.ios-tab-badge{position:absolute;top:-4px;right:2px;background:#fe4c1c;color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:-apple-system,sans-serif;border:2px solid rgba(248,248,251,.94)}
+@media(max-width:440px),(max-height:896px){body{padding:0!important;background:var(--bg0)!important;display:block!important;min-height:0}
+.ios-shell{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none}.ios-di{display:none}}
+</style>
+</head>
+<body>
+<div class="ios-shell">
+  <div class="ios-di"></div>
+  <!-- Status Bar -->
+  <div class="ios-sb">
+    <span class="ios-sb-time">9:41</span>
+    <div class="ios-sb-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#0e0c2a"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#0e0c2a"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#0e0c2a"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#0e0c2a" opacity=".3"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5C10.5 2.5 12.7 3.6 14.2 5.3L15.5 4C13.7 2 11 0.8 8 0.8C5 0.8 2.3 2 0.5 4L1.8 5.3C3.3 3.6 5.5 2.5 8 2.5Z" fill="#0e0c2a"/><path d="M8 5.5C9.7 5.5 11.2 6.2 12.3 7.4L13.6 6.1C12.1 4.6 10.2 3.7 8 3.7C5.8 3.7 3.9 4.6 2.4 6.1L3.7 7.4C4.8 6.2 6.3 5.5 8 5.5Z" fill="#0e0c2a"/><circle cx="8" cy="10" r="1.5" fill="#0e0c2a"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#0e0c2a" stroke-opacity=".35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0e0c2a"/><path d="M23 4.5V7.5C23.8 7.2 24.5 6.5 24.5 6C24.5 5.5 23.8 4.8 23 4.5Z" fill="#0e0c2a" opacity=".4"/></svg>
+    </div>
+  </div>
+  <!-- Nav Bar -->
+  <div class="ios-nb">
+    <div class="ios-nb-side">
+      <button class="ios-nb-back" id="ios-nav-back-btn" style="display:none" onclick="backToMessages()">
+        <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1 8.5L9 16" stroke="#181348" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        &nbsp;Zurück
+      </button>
+    </div>
+    <div class="ios-nb-title" id="ios-nav-title">Nachrichten</div>
+    <div class="ios-nb-side right">
+      <button class="ios-nb-action" title="Neue Nachricht">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="#181348" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+  <!-- Content -->
+  <div class="ios-content">
+    <div class="layout expanded" id="layout">
+      <div class="sidebar">
+        <div class="logo-area">
+          <div class="logo-mark">
+            <div class="logo-hex lh1"></div>
+            <div class="logo-hex lh2"></div>
+            <div class="logo-hex lh3"></div>
+          </div>
+          <div>
+            <div class="logo-text">LEGO</div>
+            <div class="logo-subtext">Lebensversicherung</div>
+          </div>
+        </div>
+        <div class="nav-section">Übersicht</div>
+        <a class="nav-btn" href="lego_dashboard.html">
+          <div class="nav-icon-wrap"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="2" fill="currentColor"/><rect x="10" y="2" width="6" height="6" rx="2" fill="currentColor" opacity=".5"/><rect x="2" y="10" width="6" height="6" rx="2" fill="currentColor" opacity=".5"/><rect x="10" y="10" width="6" height="6" rx="2" fill="currentColor" opacity=".5"/></svg></div>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <div class="nav-section">Verträge</div>
+        <a class="nav-btn" href="vertraege.html">
+          <div class="nav-icon-wrap"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 2h7l4 4v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/><path d="M11 2v4h4M6 8h6M6 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+          <span class="nav-label">Meine Verträge</span>
+        </a>
+        <div class="nav-section">Services</div>
+        <a class="nav-btn active" href="nachrichten.html" style="position:relative">
+          <div class="nav-icon-wrap"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2h14v11H10l-2 2.5L6 13H2V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+          <div class="nb"></div>
+          <span class="nav-label">Nachrichten</span>
+          <span class="badge-label">3</span>
+        </a>
+        <a class="nav-btn" href="dokumente.html">
+          <div class="nav-icon-wrap"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 2h7l4 4v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/><path d="M11 2v4h4" stroke="currentColor" stroke-width="1.4"/></svg></div>
+          <span class="nav-label">Dokumente</span>
+        </a>
+        <a class="nav-btn" href="selbstservice.html">
+          <div class="nav-icon-wrap"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 16c0-3.5 3.1-6 7-6s7 2.5 7 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+          <span class="nav-label">Self-Service</span>
+        </a>
+        <div class="nav-sep"></div>
+        <div class="toggle-btn" onclick="toggleSidebar()">
+          <svg class="toggle-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="toggle-label">Einklappen</span>
+        </div>
+        <div class="user-area">
+          <div class="user-dot">MS</div>
+          <div class="user-info">
+            <div class="user-name">Max Schmidt</div>
+            <div class="user-email">m.schmidt@mail.de</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileMenu()"></div>
+
+      <!-- Main -->
+      <div class="main">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Nachrichten</div>
+            <div class="page-sub">3 ungelesene Nachrichten</div>
+          </div>
+        </div>
+
+        <div class="split-panel">
+          <!-- Left: Message List -->
+          <div class="msg-list-panel" id="msg-list-panel">
+            <div class="filter-tabs">
+              <button class="ftab active">Alle</button>
+              <button class="ftab">Ungelesen</button>
+              <button class="ftab">Berater</button>
+              <button class="ftab">Service</button>
+            </div>
+            <div class="msg-search">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="#a8a6bc" stroke-width="1.4"/><path d="M10.5 10.5l3 3" stroke="#a8a6bc" stroke-width="1.4" stroke-linecap="round"/></svg>
+              <input type="text" placeholder="Nachrichten durchsuchen…">
+            </div>
+            <div class="msg-list">
+
+              <div class="msg-item unread active" onclick="showMessage(0)">
+                <div class="msg-av" style="background:linear-gradient(135deg,var(--secondary-dark),#3d35a0)">TB</div>
+                <div class="msg-item-right">
+                  <div class="msg-item-top">
+                    <span class="msg-sender-name">Torsten Brauer</span>
+                    <span class="msg-time-stamp">Heute, 10:42</span>
+                  </div>
+                  <div class="msg-subject">Ihre Fondsumschichtung – Empfehlung April 2026</div>
+                  <div class="msg-preview-text">Sehr geehrter Herr Schmidt, ich möchte Ihnen unsere aktuellen Fondsempfehlungen vorstellen…</div>
+                </div>
+                <div class="unread-indicator"></div>
+              </div>
+
+              <div class="msg-item unread" onclick="showMessage(1)">
+                <div class="msg-av" style="background:linear-gradient(135deg,var(--vibrant),#ff7a4d)">LS</div>
+                <div class="msg-item-right">
+                  <div class="msg-item-top">
+                    <span class="msg-sender-name">LEGO Service-Team</span>
+                    <span class="msg-time-stamp">Gestern, 14:15</span>
+                  </div>
+                  <div class="msg-subject">Ihre Jahresbescheinigung 2025 ist bereit</div>
+                  <div class="msg-preview-text">Sehr geehrter Herr Schmidt, Ihre Jahresbescheinigung für das Steuerjahr 2025 steht…</div>
+                </div>
+                <div class="unread-indicator"></div>
+              </div>
+
+              <div class="msg-item unread" onclick="showMessage(2)">
+                <div class="msg-av" style="background:linear-gradient(135deg,#16a34a,#4ade80)">LS</div>
+                <div class="msg-item-right">
+                  <div class="msg-item-top">
+                    <span class="msg-sender-name">LEGO Schadenservice</span>
+                    <span class="msg-time-stamp">Mo, 09:03</span>
+                  </div>
+                  <div class="msg-subject">Schadenmeldung #2024-0847 – Abschluss</div>
+                  <div class="msg-preview-text">Wir freuen uns, Ihnen mitteilen zu können, dass Ihr Schadenfall abschließend…</div>
+                </div>
+                <div class="unread-indicator"></div>
+              </div>
+
+              <div class="msg-item" onclick="showMessage(3)">
+                <div class="msg-av" style="background:linear-gradient(135deg,var(--secondary-dark),#3d35a0)">TB</div>
+                <div class="msg-item-right">
+                  <div class="msg-item-top">
+                    <span class="msg-sender-name" style="font-weight:400">Torsten Brauer</span>
+                    <span class="msg-time-stamp">Fr, 16:30</span>
+                  </div>
+                  <div class="msg-subject" style="font-weight:400">Beratungstermin – Bestätigung</div>
+                  <div class="msg-preview-text">Guten Tag, Ihr Termin für den 15. April um 11:00 Uhr ist bestätigt…</div>
+                </div>
+              </div>
+
+              <div class="msg-item" onclick="showMessage(4)">
+                <div class="msg-av" style="background:linear-gradient(135deg,var(--vibrant),#ff7a4d)">LS</div>
+                <div class="msg-item-right">
+                  <div class="msg-item-top">
+                    <span class="msg-sender-name" style="font-weight:400">LEGO Service-Team</span>
+                    <span class="msg-time-stamp">28. Mär</span>
+                  </div>
+                  <div class="msg-subject" style="font-weight:400">Beitragsanpassung zum 01.05.2026</div>
+                  <div class="msg-preview-text">Sehr geehrter Herr Schmidt, gemäß Ihrem Vertrag erfolgt zum 1. Mai eine planmäßige…</div>
+                </div>
+              </div>
+
+              <div class="msg-item" onclick="showMessage(5)">
+                <div class="msg-av" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">LR</div>
+                <div class="msg-item-right">
+                  <div class="msg-item-top">
+                    <span class="msg-sender-name" style="font-weight:400">LEGO Rechtsabteilung</span>
+                    <span class="msg-time-stamp">14. Mär</span>
+                  </div>
+                  <div class="msg-subject" style="font-weight:400">Aktualisierte Versicherungsbedingungen 2026</div>
+                  <div class="msg-preview-text">Bitte beachten Sie die angepassten AVB, die ab dem 1. Juli 2026 gelten…</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Right: Message Detail -->
+          <div class="msg-detail-panel" id="detail-panel">
+            <div class="detail-header">
+              <div class="detail-subject" id="detail-subject">Ihre Fondsumschichtung – Empfehlung April 2026</div>
+              <div class="detail-meta">
+                <div class="detail-av" style="background:linear-gradient(135deg,var(--secondary-dark),#3d35a0)" id="detail-av">TB</div>
+                <div>
+                  <div class="detail-sender" id="detail-sender">Torsten Brauer</div>
+                  <div class="detail-sender-role" id="detail-role">Persönlicher Berater · +49 231 88 40-512</div>
+                </div>
+                <div class="detail-date-label" id="detail-date">Heute, 10:42 Uhr</div>
+              </div>
+            </div>
+            <div class="detail-body">
+              <div class="detail-text" id="detail-text">
+                <p>Sehr geehrter Herr Schmidt,</p>
+                <p>ich hoffe, Sie sind wohlauf. Im Rahmen unserer regelmäßigen Portfolioüberprüfung möchte ich Ihnen heute meine aktualisierten Empfehlungen für Ihre fondsgebundene Lebensversicherung (Vertrag Nr. LV-2019-00342) vorstellen.</p>
+                <p>Angesichts der aktuellen Marktlage – insbesondere der leichten Korrektur im Technologiesektor und der stabilen Entwicklung europäischer Anleihen – empfehle ich eine moderate Anpassung Ihrer Fondsaufteilung. Konkret schlage ich vor, den Aktienanteil von derzeit 70 % auf 65 % zu reduzieren und den Anleihenanteil entsprechend auf 25 % zu erhöhen. Der Rohstoffanteil bliebe unverändert bei 10 %.</p>
+                <p>Mit freundlichen Grüßen,<br><strong>Torsten Brauer</strong><br>Persönlicher Berater, LEGO Lebensversicherung AG</p>
+              </div>
+              <div class="detail-attachment">
+                <div class="att-icon">PDF</div>
+                <div>
+                  <div class="att-name">Fondsanalyse_April2026.pdf</div>
+                  <div class="att-size">248 KB · PDF-Dokument</div>
+                </div>
+                <div class="att-dl">↓</div>
+              </div>
+            </div>
+            <div class="reply-area">
+              <textarea class="reply-input" placeholder="Ihre Antwort an Torsten Brauer…"></textarea>
+              <div class="reply-footer">
+                <span class="reply-hint">Drücken Sie Strg+Enter zum Senden</span>
+                <button class="reply-btn">Antworten senden</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Tab Bar -->
+  <div class="ios-tb">
+    <a class="ios-tab" href="lego_dashboard.html">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="13" y="13" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/></svg>
+      Start
+    </a>
+    <a class="ios-tab" href="vertraege.html">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 2h9l5 5v14a1 1 0 01-1 1H6a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5"/><path d="M15 2v5h5M8 11h8M8 15h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Verträge
+    </a>
+    <a class="ios-tab active" href="nachrichten.html">
+      <div style="position:relative;display:inline-flex">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 3h18v14H13l-2 3-2-3H3V3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span class="ios-tab-badge">3</span>
+      </div>
+      Nachrichten
+    </a>
+    <a class="ios-tab" href="dokumente.html">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 2h9l5 5v14a1 1 0 01-1 1H6a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5"/><path d="M15 2v5h5" stroke="currentColor" stroke-width="1.5"/><path d="M8 13h5M8 17h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Dokumente
+    </a>
+    <a class="ios-tab" href="selbstservice.html">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Service
+    </a>
+  </div>
+</div>
+
+<script>
+const messages = [
+  {
+    subject: 'Ihre Fondsumschichtung – Empfehlung April 2026',
+    av: 'TB', avColor: 'linear-gradient(135deg,#181348,#3d35a0)',
+    sender: 'Torsten Brauer', role: 'Persönlicher Berater · +49 231 88 40-512',
+    date: 'Heute, 10:42 Uhr',
+    text: `<p>Sehr geehrter Herr Schmidt,</p><p>ich hoffe, Sie sind wohlauf. Im Rahmen unserer regelmäßigen Portfolioüberprüfung möchte ich Ihnen heute meine aktualisierten Empfehlungen für Ihre fondsgebundene Lebensversicherung (Vertrag Nr. LV-2019-00342) vorstellen.</p><p>Angesichts der aktuellen Marktlage – insbesondere der leichten Korrektur im Technologiesektor und der stabilen Entwicklung europäischer Anleihen – empfehle ich eine moderate Anpassung Ihrer Fondsaufteilung. Konkret schlage ich vor, den Aktienanteil von derzeit 70 % auf 65 % zu reduzieren und den Anleihenanteil entsprechend auf 25 % zu erhöhen. Der Rohstoffanteil bliebe unverändert bei 10 %.</p><p>Mit freundlichen Grüßen,<br><strong>Torsten Brauer</strong><br>Persönlicher Berater, LEGO Lebensversicherung AG</p>`,
+    reply: 'Ihre Antwort an Torsten Brauer…'
+  },
+  {
+    subject: 'Ihre Jahresbescheinigung 2025 ist bereit',
+    av: 'LS', avColor: 'linear-gradient(135deg,#fe4c1c,#ff7a4d)',
+    sender: 'LEGO Service-Team', role: 'Kundenservice · service@lego-leben.de',
+    date: 'Gestern, 14:15 Uhr',
+    text: `<p>Sehr geehrter Herr Schmidt,</p><p>Ihre Jahresbescheinigung für das Steuerjahr 2025 steht ab sofort in Ihrem Dokumentenportal zum Download bereit. Das Dokument enthält alle steuerlich relevanten Angaben zu Ihren Versicherungsverträgen.</p><p>Bitte übermitteln Sie dieses Dokument Ihrem Steuerberater oder legen Sie es Ihrer Einkommensteuererklärung bei. Bei Fragen stehen wir Ihnen gerne zur Verfügung.</p><p>Mit freundlichen Grüßen,<br><strong>Ihr LEGO Service-Team</strong></p>`,
+    reply: 'Ihre Antwort an das Service-Team…'
+  },
+  {
+    subject: 'Schadenmeldung #2024-0847 – Abschluss',
+    av: 'LS', avColor: 'linear-gradient(135deg,#16a34a,#4ade80)',
+    sender: 'LEGO Schadenservice', role: 'Schadenregulierung · schaden@lego-leben.de',
+    date: 'Mo, 09:03 Uhr',
+    text: `<p>Sehr geehrter Herr Schmidt,</p><p>wir freuen uns, Ihnen mitteilen zu können, dass Ihr Schadenfall #2024-0847 abschließend bearbeitet wurde. Die Erstattungszahlung in Höhe von 1.840,00 € wurde heute auf Ihr hinterlegtes Konto überwiesen (IBAN DE89 2001 0020 0009 8765 43).</p><p>Sie erhalten in Kürze eine separate Bestätigungs-E-Mail mit allen Buchungsdetails. Vielen Dank für Ihre Geduld während der Bearbeitungszeit.</p><p>Mit freundlichen Grüßen,<br><strong>LEGO Schadenservice</strong></p>`,
+    reply: 'Ihre Antwort an den Schadenservice…'
+  },
+  {
+    subject: 'Beratungstermin – Bestätigung',
+    av: 'TB', avColor: 'linear-gradient(135deg,#181348,#3d35a0)',
+    sender: 'Torsten Brauer', role: 'Persönlicher Berater · +49 231 88 40-512',
+    date: 'Fr, 16:30 Uhr',
+    text: `<p>Guten Tag Herr Schmidt,</p><p>ich bestätige Ihren Beratungstermin am <strong>Dienstag, 15. April 2026 um 11:00 Uhr</strong>. Das Gespräch findet per Videoanruf statt. Den Link erhalten Sie am Vortag per E-Mail.</p><p>Agenda: Jahresrückblick Portfolio, Anpassungsoptionen, offene Fragen.</p><p>Bis dahin, Torsten Brauer</p>`,
+    reply: 'Ihre Antwort an Torsten Brauer…'
+  },
+  {
+    subject: 'Beitragsanpassung zum 01.05.2026',
+    av: 'LS', avColor: 'linear-gradient(135deg,#fe4c1c,#ff7a4d)',
+    sender: 'LEGO Service-Team', role: 'Kundenservice · service@lego-leben.de',
+    date: '28. März 2026',
+    text: `<p>Sehr geehrter Herr Schmidt,</p><p>gemäß Ihrem Vertrag erfolgt zum 1. Mai 2026 eine planmäßige Beitragserhöhung. Ihr monatlicher Beitrag für die Risikolebensversicherung (LV-2021-00891) steigt von 84,00 € auf 89,00 €. Diese Anpassung basiert auf der vereinbarten Dynamikklausel Ihres Vertrages.</p><p>Es sind keine weiteren Schritte Ihrerseits erforderlich. Die Abbuchung erfolgt weiterhin per Lastschrift.</p><p>Mit freundlichen Grüßen,<br><strong>Ihr LEGO Service-Team</strong></p>`,
+    reply: 'Ihre Antwort an das Service-Team…'
+  },
+  {
+    subject: 'Aktualisierte Versicherungsbedingungen 2026',
+    av: 'LR', avColor: 'linear-gradient(135deg,#7c3aed,#a78bfa)',
+    sender: 'LEGO Rechtsabteilung', role: 'Rechtsabteilung · avb@lego-leben.de',
+    date: '14. März 2026',
+    text: `<p>Sehr geehrter Herr Schmidt,</p><p>wir informieren Sie darüber, dass zum 1. Juli 2026 aktualisierte Allgemeine Versicherungsbedingungen (AVB) in Kraft treten. Die Änderungen betreffen hauptsächlich die Regelungen zur digitalen Kommunikation sowie die Datenschutzbestimmungen gemäß der überarbeiteten DSGVO-Leitlinien.</p><p>Die vollständigen aktualisierten AVB finden Sie als Anhang oder jederzeit in Ihrem Dokumentenportal. Bei inhaltlichen Fragen wenden Sie sich bitte an Ihren Berater Torsten Brauer.</p><p>Mit freundlichen Grüßen,<br><strong>LEGO Lebensversicherung AG – Rechtsabteilung</strong></p>`,
+    reply: 'Ihre Antwort an die Rechtsabteilung…'
+  }
+];
+
+function showMessage(idx) {
+  const m = messages[idx];
+  document.getElementById('detail-subject').textContent = m.subject;
+  document.getElementById('detail-av').textContent = m.av;
+  document.getElementById('detail-av').style.background = m.avColor;
+  document.getElementById('detail-sender').textContent = m.sender;
+  document.getElementById('detail-role').textContent = m.role;
+  document.getElementById('detail-date').textContent = m.date;
+  document.getElementById('detail-text').innerHTML = m.text;
+  document.querySelector('.reply-input').placeholder = m.reply;
+  document.querySelectorAll('.msg-item').forEach((el,i) => el.classList.toggle('active', i === idx));
+
+  // iOS: switch to detail view
+  document.getElementById('msg-list-panel').style.display = 'none';
+  document.getElementById('detail-panel').style.display = 'flex';
+  document.getElementById('ios-nav-title').textContent = m.sender;
+  document.getElementById('ios-nav-back-btn').style.display = 'flex';
+  // scroll to top of content
+  document.querySelector('.ios-content').scrollTop = 0;
+}
+
+function backToMessages() {
+  document.getElementById('msg-list-panel').style.display = '';
+  document.getElementById('detail-panel').style.display = 'none';
+  document.getElementById('ios-nav-title').textContent = 'Nachrichten';
+  document.getElementById('ios-nav-back-btn').style.display = 'none';
+}
+
+function toggleSidebar(){
+  const layout = document.getElementById('layout');
+  const label = document.querySelector('.toggle-label');
+  layout.classList.toggle('expanded');
+  label.textContent = layout.classList.contains('expanded') ? 'Einklappen' : 'Ausklappen';
+}
+
+function toggleMobileMenu(){
+  document.querySelector('.sidebar').classList.toggle('mobile-open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+
+document.querySelectorAll('.ftab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.ftab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Self-Service – LEGO Lebensversicherung</title>
+<link href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@400;500;600;700;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#f5f5f8;overflow:hidden}
+:root{
+  --primary:#e1ffa8;--primary-dark:#b8d96e;--secondary:#87c4ff;
+  --secondary-dark:#181348;--tertiary:#ffe3e8;--vibrant:#fe4c1c;
+  --bg0:#f5f5f8;--bg1:#ffffff;--bg2:#f8f8fb;--bg3:#efeff4;
+  --border:#e2e2ec;--text1:#0e0c2a;--text2:#5a5870;--text3:#a8a6bc;
+  --font-brand:'Parkinsans',system-ui,sans-serif;--font-text:'Roboto',system-ui,sans-serif;
+}
+body{font-family:var(--font-text);color:var(--text1);font-size:13px}
+.layout{display:grid;grid-template-columns:72px 1fr;height:100vh;transition:grid-template-columns .28s cubic-bezier(.4,0,.2,1)}
+.layout.expanded{grid-template-columns:230px 1fr}
+.sidebar{background:var(--secondary-dark);display:flex;flex-direction:column;align-items:flex-start;padding:20px 0;gap:3px;overflow:hidden;width:100%}
+.logo-area{display:flex;align-items:center;gap:10px;padding:0 18px;margin-bottom:20px;white-space:nowrap;overflow:hidden}
+.logo-mark{display:flex;gap:5px;flex-shrink:0;align-items:center}
+.logo-hex{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.lh1{background:var(--primary)}.lh2{background:var(--secondary)}.lh3{background:var(--vibrant)}
+.logo-text{font-family:var(--font-brand);font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px;opacity:0;transition:opacity .2s;white-space:nowrap}
+.logo-subtext{font-size:9px;color:rgba(135,196,255,.6);letter-spacing:1px;text-transform:uppercase;opacity:0;transition:opacity .2s;white-space:nowrap}
+.layout.expanded .logo-text,.layout.expanded .logo-subtext{opacity:1}
+.nav-section{font-size:9px;font-family:var(--font-brand);color:rgba(255,255,255,.25);letter-spacing:1.2px;text-transform:uppercase;padding:10px 18px 3px;white-space:nowrap;opacity:0;transition:opacity .15s}
+.layout.expanded .nav-section{opacity:1;transition:opacity .2s .08s}
+.nav-btn{width:100%;height:44px;border-radius:0;display:flex;align-items:center;gap:12px;padding:0 18px;cursor:pointer;color:rgba(255,255,255,.5);transition:all .18s;position:relative;white-space:nowrap;border-left:3px solid transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+.nav-btn.active{background:rgba(225,255,168,.08);color:var(--primary);border-left-color:var(--primary)}
+.nb{position:absolute;top:10px;left:30px;width:7px;height:7px;border-radius:50%;background:var(--vibrant);border:2px solid var(--secondary-dark)}
+.nav-icon-wrap{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-label{font-family:var(--font-brand);font-size:13px;font-weight:500;opacity:0;transition:opacity .12s;pointer-events:none;white-space:nowrap}
+.layout.expanded .nav-label{opacity:1;transition:opacity .2s .1s}
+.badge-label{margin-left:auto;background:var(--vibrant);color:#fff;font-size:10px;border-radius:100px;padding:1px 7px;font-weight:600;opacity:0;transition:opacity .12s;font-family:var(--font-brand)}
+.layout.expanded .badge-label{opacity:1;transition:opacity .2s .1s}
+.nav-sep{width:calc(100% - 36px);height:1px;background:rgba(255,255,255,.08);margin:6px 18px}
+.toggle-btn{width:100%;height:44px;margin:0 0 10px;border-radius:0;background:transparent;border:none;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:rgba(255,255,255,.4);font-size:12px;transition:all .2s;flex-shrink:0;padding:0 18px}
+.toggle-btn:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+.layout.expanded .toggle-btn{width:calc(100% - 36px);margin:0 18px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);justify-content:flex-start;padding:0 12px}
+.toggle-icon{transition:transform .28s;flex-shrink:0}
+.layout.expanded .toggle-icon{transform:rotate(180deg)}
+.toggle-label{opacity:0;max-width:0;overflow:hidden;transition:opacity .12s,max-width .12s;white-space:nowrap;font-family:var(--font-brand);font-weight:500}
+.layout.expanded .toggle-label{opacity:1;max-width:200px;transition:opacity .2s .1s,max-width .2s .1s}
+.user-area{display:flex;align-items:center;gap:10px;padding:0 18px;margin-top:auto;white-space:nowrap;overflow:hidden;width:100%}
+.user-dot{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--vibrant),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;font-family:var(--font-brand)}
+.user-info{opacity:0;transition:opacity .2s}.layout.expanded .user-info{opacity:1}
+.user-name{font-size:13px;font-weight:600;color:#fff;font-family:var(--font-brand)}
+.user-email{font-size:11px;color:rgba(255,255,255,.35)}
+
+/* Main layout */
+.main{overflow:hidden;display:flex;flex-direction:column;height:100vh}
+.page-header{padding:28px 34px 20px;flex-shrink:0}
+.page-title{font-family:var(--font-brand);font-size:28px;font-weight:800;color:var(--text1);letter-spacing:-.5px}
+.page-sub{font-size:13px;color:var(--text2);margin-top:4px}
+
+/* Content split */
+.content-split{display:grid;grid-template-columns:1fr 420px;flex:1;overflow:hidden;gap:0;padding:12px 28px 28px 34px}
+.services-col{overflow-y:auto;padding-right:24px;margin-top:-12px;padding-top:12px}
+.panel-col{overflow:visible;padding:0}
+
+/* Service section title */
+.service-section-title{font-family:var(--font-brand);font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.4px;text-transform:uppercase;margin-bottom:12px;margin-top:28px}
+.service-section-title:first-child{margin-top:0}
+
+/* Service grid */
+.service-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.service-card{background:var(--bg1);border:2px solid var(--border);border-radius:20px;padding:20px;cursor:pointer;transition:all .22s;display:flex;flex-direction:column;gap:10px}
+.service-card:hover{border-color:var(--secondary-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(24,19,72,.1)}
+.service-card.active{border-color:var(--secondary-dark);background:rgba(24,19,72,.03)}
+.sc-icon{width:46px;height:46px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.sc-title{font-family:var(--font-brand);font-size:14px;font-weight:700;color:var(--text1)}
+.sc-desc{font-size:12px;color:var(--text2);font-family:var(--font-text);line-height:1.5}
+.sc-badge{display:inline-flex;font-size:10px;font-weight:600;font-family:var(--font-brand);padding:2px 8px;border-radius:100px;background:var(--bg3);color:var(--text3)}
+.sc-badge.instant{background:#f0fdf4;color:#16a34a}
+.sc-badge.days{background:#fff7ed;color:#c2410c}
+
+/* Right panel */
+.form-panel{background:var(--bg1);border-radius:28px;box-shadow:0 24px 64px rgba(0,0,0,.10),0 6px 20px rgba(0,0,0,.05);overflow:hidden;height:100%;display:flex;flex-direction:column}
+.panel-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px;text-align:center;color:var(--text3)}
+.panel-empty-icon{font-size:48px;margin-bottom:16px}
+.panel-empty-text{font-family:var(--font-brand);font-size:16px;font-weight:600;color:var(--text3)}
+.panel-empty-sub{font-size:13px;margin-top:6px;font-family:var(--font-text)}
+
+.panel-header{padding:24px 28px 0;flex-shrink:0}
+.panel-icon-title{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.panel-icon{width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.panel-title{font-family:var(--font-brand);font-size:20px;font-weight:700;color:var(--text1);letter-spacing:-.2px}
+.panel-sub{font-size:13px;color:var(--text2);margin-bottom:20px;font-family:var(--font-text)}
+.panel-divider{height:1px;background:var(--border);margin:0 28px}
+.panel-body{padding:24px 28px;flex:1;overflow-y:auto}
+.panel-footer{padding:0 28px 24px;flex-shrink:0}
+
+/* Form elements in panel */
+.fp-group{margin-bottom:18px}
+.fp-label{font-family:var(--font-brand);font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px;display:block}
+.fp-input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:10px 14px;font-family:var(--font-text);font-size:13px;color:var(--text1);outline:none;transition:border-color .15s;background:var(--bg1)}
+.fp-input:focus{border-color:var(--secondary-dark)}
+.fp-input::placeholder{color:var(--text3)}
+select.fp-input{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a8a6bc' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.fp-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fp-info-box{background:var(--bg2);border-radius:12px;padding:13px 15px;margin-bottom:18px;font-size:12px;color:var(--text2);font-family:var(--font-text);line-height:1.5;border:1px solid var(--border)}
+.fp-current{font-family:var(--font-brand);font-size:12px;color:var(--text3);margin-bottom:6px}
+.fp-current-val{font-size:14px;font-weight:600;color:var(--text1);font-family:var(--font-brand)}
+.submit-btn{width:100%;background:var(--secondary-dark);color:var(--primary);border:none;border-radius:14px;padding:13px 20px;font-family:var(--font-brand);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .18s;display:flex;align-items:center;justify-content:center;gap:8px}
+.submit-btn:hover{opacity:.88}
+.cancel-btn{width:100%;background:none;border:1.5px solid var(--border);border-radius:14px;padding:12px 20px;font-family:var(--font-brand);font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;margin-top:8px;transition:all .15s}
+.cancel-btn:hover{background:var(--bg3)}
+.success-panel{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;flex:1}
+.success-panel-icon{width:64px;height:64px;background:var(--primary);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 16px}
+.success-panel-title{font-family:var(--font-brand);font-size:20px;font-weight:800;color:var(--text1);margin-bottom:8px}
+.success-panel-sub{font-size:13px;color:var(--text2);font-family:var(--font-text);margin-bottom:24px}
+.back-btn{background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:10px 20px;font-family:var(--font-brand);font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s}
+.back-btn:hover{background:var(--bg3)}
+
+.hamburger{display:none;width:38px;height:38px;background:var(--bg1);border:1px solid var(--border);border-radius:12px;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:99}
+.sidebar-overlay.open{display:block}
+
+@media(max-width:900px){
+  html,body{overflow:auto;height:auto}
+  .layout,.layout.expanded{grid-template-columns:1fr;height:auto;min-height:100vh}
+  .sidebar{position:fixed;left:-230px;top:0;bottom:0;width:230px;z-index:100;transition:left .28s cubic-bezier(.4,0,.2,1)}
+  .sidebar.mobile-open{left:0}
+  .hamburger{display:flex}
+  .main{height:auto;overflow:visible}
+  .content-split{grid-template-columns:1fr;padding:0 18px 20px;gap:20px;overflow:visible;flex:none}
+  .services-col{overflow:visible;padding-right:0}
+  .panel-col{min-height:400px}
+  .page-header{padding:20px 18px 14px;display:flex;flex-direction:column;gap:8px}
+  .service-grid{grid-template-columns:1fr}
+}
+
+/* ── iOS Simulator ── */
+html,body{height:auto!important;overflow:visible!important}
+body{display:flex!important;align-items:center!important;justify-content:center!important;padding:24px 16px!important;min-height:100vh!important;background:radial-gradient(ellipse at 35% 25%,#1a1f40 0%,#0d0d18 70%)!important}
+.layout,.layout.expanded{display:block!important;height:auto!important;min-height:0!important}
+.sidebar,.sidebar-overlay,.hamburger{display:none!important}
+.main{padding:16px 16px 28px!important;height:auto!important;overflow:visible!important;display:block!important}
+.page-header{padding:0 0 14px!important}
+.content-split{display:block!important;grid-template-columns:none!important;padding:0!important;overflow:visible!important;flex:none!important}
+.services-col{overflow:visible!important;padding-right:0!important;margin-top:0!important;padding-top:0!important}
+.panel-col{display:block!important;margin-top:16px!important}
+.form-panel{position:static!important;height:auto!important;border-radius:20px!important}
+.service-grid{grid-template-columns:1fr 1fr!important}
+.ios-shell{width:393px;height:852px;background:var(--bg0);border-radius:50px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 0 0 1.5px rgba(255,255,255,.1),0 0 0 11px #1c1c1e,0 0 0 12.5px rgba(255,255,255,.06),0 44px 110px rgba(0,0,0,.7),0 18px 50px rgba(0,0,0,.4);flex-shrink:0}
+.ios-di{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:126px;height:37px;background:#000;border-radius:20px;z-index:300;pointer-events:none}
+.ios-sb{height:54px;padding:14px 26px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:200}
+.ios-sb-time{font-size:15px;font-weight:700;color:var(--text1);font-family:-apple-system,sans-serif;letter-spacing:-.3px}
+.ios-sb-icons{display:flex;align-items:center;gap:5px}
+.ios-nb{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(248,248,251,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:.5px solid rgba(0,0,0,.14);flex-shrink:0;z-index:150}
+.ios-nb-side{min-width:70px;display:flex;align-items:center}
+.ios-nb-side.right{justify-content:flex-end}
+.ios-nb-title{font-size:17px;font-weight:600;color:var(--text1);font-family:-apple-system,sans-serif;letter-spacing:-.2px;text-align:center;flex:1}
+.ios-nb-back{display:flex;align-items:center;gap:2px;color:#181348;font-family:-apple-system,sans-serif;font-size:17px;cursor:pointer;text-decoration:none;font-weight:400;background:none;border:none;padding:0}
+.ios-nb-action{display:flex;align-items:center;color:#181348;cursor:pointer;background:none;border:none;padding:4px}
+.ios-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.ios-content::-webkit-scrollbar{display:none}
+.ios-content{scrollbar-width:none}
+.ios-tb{height:82px;padding:8px 0 18px;display:flex;align-items:flex-start;justify-content:space-around;background:rgba(248,248,251,.94);border-top:.5px solid rgba(0,0,0,.16);flex-shrink:0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.ios-tab{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#8e8e93;font-size:10px;font-family:-apple-system,sans-serif;font-weight:500;min-width:60px;position:relative;transition:color .15s}
+.ios-tab.active{color:#181348}
+.ios-tab-badge{position:absolute;top:-4px;right:2px;background:#fe4c1c;color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:-apple-system,sans-serif;border:2px solid rgba(248,248,251,.94)}
+@media(max-width:440px),(max-height:896px){body{padding:0!important;background:var(--bg0)!important;display:block!important;min-height:0}
+.ios-shell{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none}.ios-di{display:none}}
+</style>
+</head>
+<body>
+<div class="ios-shell">
+  <div class="ios-di"></div>
+  <!-- Status Bar -->
+  <div class="ios-sb">
+    <span class="ios-sb-time">9:41</span>
+    <div class="ios-sb-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#0e0c2a"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#0e0c2a"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#0e0c2a"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#0e0c2a" opacity=".3"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5C10.5 2.5 12.7 3.6 14.2 5.3L15.5 4C13.7 2 11 0.8 8 0.8C5 0.8 2.3 2 0.5 4L1.8 5.3C3.3 3.6 5.5 2.5 8 2.5Z" fill="#0e0c2a"/><path d="M8 5.5C9.7 5.5 11.2 6.2 12.3 7.4L13.6 6.1C12.1 4.6 10.2 3.7 8 3.7C5.8 3.7 3.9 4.6 2.4 6.1L3.7 7.4C4.8 6.2 6.3 5.5 8 5.5Z" fill="#0e0c2a"/><circle cx="8" cy="10" r="1.5" fill="#0e0c2a"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#0e0c2a" stroke-opacity=".35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0e0c2a"/><path d="M23 4.5V7.5C23.8 7.2 24.5 6.5 24.5 6C24.5 5.5 23.8 4.8 23 4.5Z" fill="#0e0c2a" opacity=".4"/></svg>
+    </div>
+  </div>
+  <!-- Nav Bar -->
+  <div class="ios-nb">
+    <div class="ios-nb-side"></div>
+    <div class="ios-nb-title">Self-Service</div>
+    <div class="ios-nb-side right"></div>
+  </div>
+  <!-- Content -->
+  <div class="ios-content" id="ios-content">
+    <div class="layout expanded" id="layout">
+      <div class="sidebar">
+        <div class="logo-area">
+          <div class="logo-mark"><div class="logo-hex lh1"></div><div class="logo-hex lh2"></div><div class="logo-hex lh3"></div></div>
+          <div><div class="logo-text">LEGO</div><div class="logo-subtext">Lebensversicherung</div></div>
+        </div>
+        <div class="nav-section">Übersicht</div>
+        <a class="nav-btn" href="lego_dashboard.html">
+          <div class="nav-icon-wrap"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="2" fill="currentColor"/><rect x="10" y="2" width="6" height="6" rx="2" fill="currentColor" opacity=".5"/><rect x="2" y="10" width="6" height="6" rx="2" fill="currentColor" opacity=".5"/><rect x="10" y="10" width="6" height="6" rx="2" fill="currentColor" opacity=".5"/></svg></div>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <div class="nav-section">Verträge</div>
+        <a class="nav-btn" href="vertraege.html">
+          <div class="nav-icon-wrap"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 2h7l4 4v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/><path d="M11 2v4h4M6 8h6M6 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+          <span class="nav-label">Meine Verträge</span>
+        </a>
+        <div class="nav-section">Services</div>
+        <a class="nav-btn" href="nachrichten.html" style="position:relative">
+          <div class="nav-icon-wrap"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2h14v11H10l-2 2.5L6 13H2V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+          <div class="nb"></div>
+          <span class="nav-label">Nachrichten</span>
+          <span class="badge-label">3</span>
+        </a>
+        <a class="nav-btn" href="dokumente.html">
+          <div class="nav-icon-wrap"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 2h7l4 4v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/><path d="M11 2v4h4" stroke="currentColor" stroke-width="1.4"/></svg></div>
+          <span class="nav-label">Dokumente</span>
+        </a>
+        <a class="nav-btn active" href="selbstservice.html">
+          <div class="nav-icon-wrap"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 16c0-3.5 3.1-6 7-6s7 2.5 7 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+          <span class="nav-label">Self-Service</span>
+        </a>
+        <div class="nav-sep"></div>
+        <div class="toggle-btn" onclick="toggleSidebar()">
+          <svg class="toggle-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="toggle-label">Einklappen</span>
+        </div>
+        <div class="user-area">
+          <div class="user-dot">MS</div>
+          <div class="user-info"><div class="user-name">Max Schmidt</div><div class="user-email">m.schmidt@mail.de</div></div>
+        </div>
+      </div>
+      <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileMenu()"></div>
+
+      <div class="main">
+        <div class="page-header">
+          <div class="page-title">Self-Service</div>
+          <div class="page-sub">Verwalten Sie Ihre Vertragsdaten schnell und einfach</div>
+        </div>
+
+        <div class="content-split">
+          <!-- Services grid -->
+          <div class="services-col">
+            <div class="service-section-title">Persönliche Daten</div>
+            <div class="service-grid">
+              <div class="service-card" id="sc-adresse" onclick="openPanel('adresse')">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div class="sc-icon" style="background:#e8f4ff">🏠</div>
+                  <span class="sc-badge instant">Sofort</span>
+                </div>
+                <div class="sc-title">Adresse ändern</div>
+                <div class="sc-desc">Aktualisieren Sie Ihre Wohn- oder Rechnungsadresse.</div>
+              </div>
+              <div class="service-card" id="sc-kontakt" onclick="openPanel('kontakt')">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div class="sc-icon" style="background:#fdf4ff">📱</div>
+                  <span class="sc-badge instant">Sofort</span>
+                </div>
+                <div class="sc-title">Kontaktdaten ändern</div>
+                <div class="sc-desc">Telefonnummer oder E-Mail-Adresse aktualisieren.</div>
+              </div>
+            </div>
+
+            <div class="service-section-title">Vertragsverwaltung</div>
+            <div class="service-grid">
+              <div class="service-card" id="sc-beitrag" onclick="openPanel('beitrag')">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div class="sc-icon" style="background:#f0fdf4">💶</div>
+                  <span class="sc-badge days">2–3 Tage</span>
+                </div>
+                <div class="sc-title">Beitrag anpassen</div>
+                <div class="sc-desc">Monatlichen Beitrag erhöhen oder reduzieren.</div>
+              </div>
+              <div class="service-card" id="sc-beguenstigte" onclick="openPanel('beguenstigte')">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div class="sc-icon" style="background:#ffe3e8">👨‍👩‍👧</div>
+                  <span class="sc-badge days">2–3 Tage</span>
+                </div>
+                <div class="sc-title">Begünstigte verwalten</div>
+                <div class="sc-desc">Begünstigte hinzufügen, ändern oder entfernen.</div>
+              </div>
+              <div class="service-card" id="sc-bankdaten" onclick="openPanel('bankdaten')">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div class="sc-icon" style="background:#fff7ed">🏦</div>
+                  <span class="sc-badge instant">Sofort</span>
+                </div>
+                <div class="sc-title">Bankdaten ändern</div>
+                <div class="sc-desc">IBAN für Lastschrift oder Auszahlungen aktualisieren.</div>
+              </div>
+              <div class="service-card" id="sc-dynamik" onclick="openPanel('dynamik')">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div class="sc-icon" style="background:#e8f4ff">📈</div>
+                  <span class="sc-badge days">2–3 Tage</span>
+                </div>
+                <div class="sc-title">Dynamik anpassen</div>
+                <div class="sc-desc">Jährliche Beitragserhöhung aktivieren oder deaktivieren.</div>
+              </div>
+            </div>
+
+            <div class="service-section-title">Rechtliches & Vollmachten</div>
+            <div class="service-grid">
+              <div class="service-card" id="sc-vollmacht" onclick="openPanel('vollmacht')">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div class="sc-icon" style="background:#fdf4ff">📝</div>
+                  <span class="sc-badge days">5–7 Tage</span>
+                </div>
+                <div class="sc-title">Vollmacht erteilen</div>
+                <div class="sc-desc">Einer Vertrauensperson Handlungsvollmacht erteilen.</div>
+              </div>
+              <div class="service-card" id="sc-kuendigung" onclick="openPanel('kuendigung')">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div class="sc-icon" style="background:#fff0f0">⚠️</div>
+                  <span class="sc-badge days" style="background:#fff0f0;color:#c2410c">14 Tage</span>
+                </div>
+                <div class="sc-title">Kündigung einreichen</div>
+                <div class="sc-desc">Vertrag zum nächstmöglichen Termin kündigen.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form panel -->
+          <div class="panel-col">
+            <div class="form-panel" id="form-panel" style="display:none">
+              <div class="panel-empty" id="panel-empty" style="display:none"></div>
+              <div id="panel-content" style="display:none;flex:1;flex-direction:column;overflow:hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Tab Bar -->
+  <div class="ios-tb">
+    <a class="ios-tab" href="lego_dashboard.html">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="13" y="13" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/></svg>
+      Start
+    </a>
+    <a class="ios-tab" href="vertraege.html">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 2h9l5 5v14a1 1 0 01-1 1H6a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5"/><path d="M15 2v5h5M8 11h8M8 15h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Verträge
+    </a>
+    <a class="ios-tab" href="nachrichten.html">
+      <div style="position:relative;display:inline-flex">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 3h18v14H13l-2 3-2-3H3V3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span class="ios-tab-badge">3</span>
+      </div>
+      Nachrichten
+    </a>
+    <a class="ios-tab" href="dokumente.html">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 2h9l5 5v14a1 1 0 01-1 1H6a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5"/><path d="M15 2v5h5" stroke="currentColor" stroke-width="1.5"/><path d="M8 13h5M8 17h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Dokumente
+    </a>
+    <a class="ios-tab active" href="selbstservice.html">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Service
+    </a>
+  </div>
+</div>
+
+<script>
+const panelDefs = {
+  adresse: {
+    icon: '🏠', iconBg: '#e8f4ff', title: 'Adresse ändern',
+    sub: 'Ihre neue Adresse wird sofort in allen Verträgen aktualisiert.',
+    current: 'Aktuelle Adresse: Hansastraße 42, 44137 Dortmund',
+    fields: `
+      <div class="fp-row">
+        <div class="fp-group"><label class="fp-label">Straße</label><input type="text" class="fp-input" value="Hansastraße"></div>
+        <div class="fp-group"><label class="fp-label">Hausnummer</label><input type="text" class="fp-input" value="42"></div>
+      </div>
+      <div class="fp-row">
+        <div class="fp-group"><label class="fp-label">PLZ</label><input type="text" class="fp-input" value="44137"></div>
+        <div class="fp-group"><label class="fp-label">Stadt</label><input type="text" class="fp-input" value="Dortmund"></div>
+      </div>
+      <div class="fp-group"><label class="fp-label">Land</label>
+        <select class="fp-input"><option>Deutschland</option><option>Österreich</option><option>Schweiz</option></select>
+      </div>
+      <div class="fp-info-box">Die Adressänderung gilt für alle Ihre Verträge gleichzeitig. Eine Bestätigung erhalten Sie per E-Mail.</div>
+    `,
+    btnLabel: 'Adresse speichern'
+  },
+  kontakt: {
+    icon: '📱', iconBg: '#fdf4ff', title: 'Kontaktdaten ändern',
+    sub: 'E-Mail und Telefonnummer für alle Ihre Verträge aktualisieren.',
+    current: 'Aktuelle E-Mail: m.schmidt@mail.de · Tel: +49 171 234 56 78',
+    fields: `
+      <div class="fp-group"><label class="fp-label">E-Mail-Adresse</label><input type="email" class="fp-input" value="m.schmidt@mail.de"></div>
+      <div class="fp-group"><label class="fp-label">Neue E-Mail bestätigen</label><input type="email" class="fp-input" placeholder="E-Mail wiederholen"></div>
+      <div class="fp-group"><label class="fp-label">Telefon (Mobil)</label><input type="tel" class="fp-input" value="+49 171 234 56 78"></div>
+      <div class="fp-group"><label class="fp-label">Telefon (Festnetz, optional)</label><input type="tel" class="fp-input" placeholder="+49 231 …"></div>
+      <div class="fp-info-box">Nach der Änderung der E-Mail-Adresse erhalten Sie eine Bestätigungsmail an die alte Adresse.</div>
+    `,
+    btnLabel: 'Kontaktdaten speichern'
+  },
+  beitrag: {
+    icon: '💶', iconBg: '#f0fdf4', title: 'Beitrag anpassen',
+    sub: 'Ändern Sie Ihren monatlichen Beitrag. Die Änderung gilt ab dem nächsten Fälligkeitstermin.',
+    current: 'Aktueller Gesamtbeitrag: 228,00 € / Monat',
+    fields: `
+      <div class="fp-group"><label class="fp-label">Vertrag auswählen</label>
+        <select class="fp-input">
+          <option>Fondsgebundene LV · LV-2019-00342 · 104 €/Monat</option>
+          <option>Risikolebensversicherung · LV-2021-00891 · 89 €/Monat</option>
+          <option>Berufsunfähigkeits-LV · BU-2022-00155 · 35 €/Monat</option>
+        </select>
+      </div>
+      <div class="fp-group"><label class="fp-label">Neuer monatlicher Beitrag (€)</label>
+        <input type="number" class="fp-input" value="120" min="50" max="2000" step="5">
+      </div>
+      <div class="fp-group"><label class="fp-label">Grund der Änderung (optional)</label>
+        <select class="fp-input">
+          <option>Bitte auswählen…</option>
+          <option>Gehaltssteigerung</option>
+          <option>Finanzielle Engpässe</option>
+          <option>Anpassung Altersvorsorge</option>
+          <option>Sonstiges</option>
+        </select>
+      </div>
+      <div class="fp-info-box">Minimalbeitrag: 30 €/Monat. Die Anpassung wird von Ihrem Berater geprüft und innerhalb von 2–3 Werktagen aktiviert.</div>
+    `,
+    btnLabel: 'Beitragsänderung beantragen'
+  },
+  beguenstigte: {
+    icon: '👨‍👩‍👧', iconBg: '#ffe3e8', title: 'Begünstigte verwalten',
+    sub: 'Legen Sie fest, wer im Leistungsfall die Versicherungssumme erhält.',
+    current: 'Aktuell begünstigt: Anna Schmidt (100 %)',
+    fields: `
+      <div class="fp-group"><label class="fp-label">Vertrag auswählen</label>
+        <select class="fp-input">
+          <option>Risikolebensversicherung · LV-2021-00891</option>
+          <option>Fondsgebundene LV · LV-2019-00342</option>
+        </select>
+      </div>
+      <div style="background:var(--bg2);border-radius:14px;padding:14px;margin-bottom:16px;border:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-family:var(--font-brand);font-size:13px;font-weight:700">Anna Schmidt</div>
+          <div style="font-family:var(--font-brand);font-size:13px;color:var(--secondary-dark)">100 %</div>
+        </div>
+        <div style="font-size:12px;color:var(--text3);font-family:var(--font-text)">Ehegattin · geb. 15.08.1985</div>
+      </div>
+      <div class="fp-group"><label class="fp-label">Name des neuen / geänderten Begünstigten</label><input type="text" class="fp-input" placeholder="Vor- und Nachname"></div>
+      <div class="fp-row">
+        <div class="fp-group"><label class="fp-label">Geburtsdatum</label><input type="date" class="fp-input"></div>
+        <div class="fp-group"><label class="fp-label">Anteil (%)</label><input type="number" class="fp-input" placeholder="z.B. 50" min="1" max="100"></div>
+      </div>
+      <div class="fp-group"><label class="fp-label">Verwandtschaftsverhältnis</label>
+        <select class="fp-input"><option>Bitte auswählen…</option><option>Ehegattin / Ehegatte</option><option>Lebenspartnerin / Lebenspartner</option><option>Kind</option><option>Elternteil</option><option>Geschwister</option><option>Sonstiges</option></select>
+      </div>
+      <div class="fp-info-box">Die Änderung der Begünstigten muss schriftlich bestätigt werden. Nach dem Absenden erhalten Sie ein Formular zur Unterschrift.</div>
+    `,
+    btnLabel: 'Begünstigte aktualisieren'
+  },
+  bankdaten: {
+    icon: '🏦', iconBg: '#fff7ed', title: 'Bankdaten ändern',
+    sub: 'Aktualisieren Sie Ihre IBAN für Lastschriftabbuchungen und Auszahlungen.',
+    current: 'Aktuelle IBAN: DE89 2001 **** **** 43',
+    fields: `
+      <div class="fp-group"><label class="fp-label">Neue IBAN</label><input type="text" class="fp-input" placeholder="DE00 0000 0000 0000 0000 00" maxlength="27"></div>
+      <div class="fp-group"><label class="fp-label">BIC (optional)</label><input type="text" class="fp-input" placeholder="COBADEFFXXX"></div>
+      <div class="fp-group"><label class="fp-label">Kontoinhaber</label><input type="text" class="fp-input" value="Max Schmidt"></div>
+      <div class="fp-group"><label class="fp-label">Gültig ab</label>
+        <select class="fp-input">
+          <option>Nächster Fälligkeitstermin (01. Mai 2026)</option>
+          <option>Ab sofort</option>
+        </select>
+      </div>
+      <div class="fp-info-box">Ihre Bankdaten werden verschlüsselt übertragen und nach dem SEPA-Standard verarbeitet. Die Änderung gilt für alle Verträge.</div>
+    `,
+    btnLabel: 'Bankdaten speichern'
+  },
+  dynamik: {
+    icon: '📈', iconBg: '#e8f4ff', title: 'Dynamik anpassen',
+    sub: 'Steuern Sie die jährliche automatische Beitragserhöhung Ihrer Verträge.',
+    current: 'Aktuelle Dynamik: +3 % p.a. für alle Verträge',
+    fields: `
+      <div class="fp-group"><label class="fp-label">Vertrag auswählen</label>
+        <select class="fp-input">
+          <option>Risikolebensversicherung · LV-2021-00891</option>
+          <option>Fondsgebundene LV · LV-2019-00342</option>
+          <option>Berufsunfähigkeits-LV · BU-2022-00155</option>
+          <option>Alle Verträge</option>
+        </select>
+      </div>
+      <div class="fp-group"><label class="fp-label">Dynamikoption</label>
+        <select class="fp-input">
+          <option>Dynamik aktiv · +3 % p.a.</option>
+          <option>Dynamik aktiv · +5 % p.a.</option>
+          <option>Dynamik pausieren (1 Jahr)</option>
+          <option>Dynamik dauerhaft deaktivieren</option>
+        </select>
+      </div>
+      <div class="fp-info-box" style="border-color:#fed7aa;background:#fff7ed">⚠️ Das Deaktivieren der Dynamik kann langfristig Ihre Versorgungslücke vergrößern. Sprechen Sie im Zweifel mit Ihrem Berater Torsten Brauer.</div>
+    `,
+    btnLabel: 'Dynamik speichern'
+  },
+  vollmacht: {
+    icon: '📝', iconBg: '#fdf4ff', title: 'Vollmacht erteilen',
+    sub: 'Bevollmächtigen Sie eine Vertrauensperson, Ihre Vertragsangelegenheiten zu regeln.',
+    current: 'Keine aktive Vollmacht vorhanden.',
+    fields: `
+      <div class="fp-group"><label class="fp-label">Name der bevollmächtigten Person</label><input type="text" class="fp-input" placeholder="Vor- und Nachname"></div>
+      <div class="fp-group"><label class="fp-label">Geburtsdatum</label><input type="date" class="fp-input"></div>
+      <div class="fp-group"><label class="fp-label">Beziehung zur Person</label>
+        <select class="fp-input"><option>Bitte auswählen…</option><option>Ehegattin / Ehegatte</option><option>Kind</option><option>Elternteil</option><option>Vertrauensperson</option><option>Rechtsanwalt / Anwältin</option></select>
+      </div>
+      <div class="fp-group"><label class="fp-label">Umfang der Vollmacht</label>
+        <select class="fp-input"><option>Allgemeine Handlungsvollmacht</option><option>Beschränkt auf Vertragsauskünfte</option><option>Beschränkt auf Zahlungsänderungen</option></select>
+      </div>
+      <div class="fp-group"><label class="fp-label">Gültig bis (optional)</label><input type="date" class="fp-input"></div>
+      <div class="fp-info-box">Eine schriftliche Vollmacht wird nach dem Absenden per Post an Sie zugesandt und muss unterschrieben zurückgesendet werden.</div>
+    `,
+    btnLabel: 'Vollmacht beantragen'
+  },
+  kuendigung: {
+    icon: '⚠️', iconBg: '#fff0f0', title: 'Kündigung einreichen',
+    sub: 'Kündigen Sie einen Vertrag zum nächstmöglichen ordentlichen Kündigungstermin.',
+    current: '',
+    fields: `
+      <div style="background:#fff0f0;border:1px solid #fecaca;border-radius:14px;padding:14px 16px;margin-bottom:18px;display:flex;gap:10px">
+        <span style="font-size:18px">⚠️</span>
+        <div style="font-size:13px;color:#b91c1c;font-family:var(--font-text)"><strong>Wichtiger Hinweis:</strong> Eine vorzeitige Kündigung kann zu Verlust von angespartem Kapital und Versicherungsschutz führen. Bitte wenden Sie sich vor der Kündigung an Ihren Berater Torsten Brauer.</div>
+      </div>
+      <div class="fp-group"><label class="fp-label">Zu kündigender Vertrag</label>
+        <select class="fp-input">
+          <option>Bitte auswählen…</option>
+          <option>Risikolebensversicherung · LV-2021-00891</option>
+          <option>Fondsgebundene LV · LV-2019-00342</option>
+          <option>Berufsunfähigkeits-LV · BU-2022-00155</option>
+        </select>
+      </div>
+      <div class="fp-group"><label class="fp-label">Kündigungsgrund</label>
+        <select class="fp-input">
+          <option>Bitte auswählen…</option>
+          <option>Finanzielle Gründe</option>
+          <option>Wechsel zu anderem Anbieter</option>
+          <option>Veränderung der Lebenssituation</option>
+          <option>Unzufriedenheit mit Leistungen</option>
+          <option>Sonstiges</option>
+        </select>
+      </div>
+      <div class="fp-group"><label class="fp-label">Gewünschtes Kündigungsdatum</label><input type="date" class="fp-input"></div>
+      <div class="fp-group">
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+          <input type="checkbox" style="margin-top:2px;accent-color:#c2410c">
+          <span style="font-size:13px;color:var(--text2);font-family:var(--font-text)">Ich habe die Konsequenzen der Kündigung verstanden und wünsche trotzdem die Einreichung.</span>
+        </label>
+      </div>
+    `,
+    btnLabel: 'Kündigung einreichen',
+    btnDanger: true
+  }
+};
+
+let activeService = null;
+
+function openPanel(key) {
+  document.querySelectorAll('.service-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('sc-' + key)?.classList.add('active');
+
+  const def = panelDefs[key];
+  activeService = key;
+
+  document.getElementById('form-panel').style.display = 'flex';
+  document.getElementById('panel-empty').style.display = 'none';
+  const content = document.getElementById('panel-content');
+  content.style.display = 'flex';
+
+  const btnStyle = def.btnDanger ? 'style="background:#c2410c;"' : '';
+
+  content.innerHTML = `
+    <div class="panel-header">
+      <div class="panel-icon-title">
+        <div class="panel-icon" style="background:${def.iconBg}">${def.icon}</div>
+        <div class="panel-title">${def.title}</div>
+      </div>
+      <div class="panel-sub">${def.sub}</div>
+      ${def.current ? `<div style="background:var(--bg2);border-radius:12px;padding:11px 14px;margin-bottom:16px;font-size:12px;color:var(--text2);font-family:var(--font-text);border:1px solid var(--border)">${def.current}</div>` : ''}
+    </div>
+    <div class="panel-divider"></div>
+    <div class="panel-body">${def.fields}</div>
+    <div class="panel-footer">
+      <button class="submit-btn" ${btnStyle} onclick="submitPanel('${key}')">${def.btnLabel}</button>
+      <button class="cancel-btn" onclick="closePanel()">Abbrechen</button>
+    </div>
+  `;
+
+  // Scroll to form panel in iOS
+  setTimeout(() => {
+    document.getElementById('form-panel').scrollIntoView({behavior:'smooth', block:'start'});
+  }, 50);
+}
+
+function submitPanel(key) {
+  const content = document.getElementById('panel-content');
+  content.innerHTML = `
+    <div class="success-panel">
+      <div class="success-panel-icon">✓</div>
+      <div class="success-panel-title">Anfrage eingegangen!</div>
+      <div class="success-panel-sub">Ihre Anfrage wurde erfolgreich übermittelt. Sie erhalten in Kürze eine Bestätigung per E-Mail an m.schmidt@mail.de.</div>
+      <button class="back-btn" onclick="closePanel()">Weitere Änderungen vornehmen</button>
+    </div>
+  `;
+  document.querySelectorAll('.service-card').forEach(c => c.classList.remove('active'));
+}
+
+function closePanel() {
+  activeService = null;
+  document.querySelectorAll('.service-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('form-panel').style.display = 'none';
+  document.getElementById('panel-empty').style.display = 'flex';
+  const content = document.getElementById('panel-content');
+  content.style.display = 'none';
+  content.innerHTML = '';
+  // Scroll back to top
+  document.getElementById('ios-content').scrollTop = 0;
+}
+
+function toggleSidebar(){
+  const layout=document.getElementById('layout');
+  layout.classList.toggle('expanded');
+  document.querySelector('.toggle-label').textContent=layout.classList.contains('expanded')?'Einklappen':'Ausklappen';
+}
+function toggleMobileMenu(){
+  document.querySelector('.sidebar').classList.toggle('mobile-open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple Watch – Persönlicher LEGO Newsfeed</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0a;
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    background-image:
+      radial-gradient(ellipse at 25% 30%, rgba(30,50,90,0.5) 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 70%, rgba(10,30,60,0.4) 0%, transparent 55%);
+    user-select: none;
+  }
+
+  .watch-scene {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    animation: sceneIn 0.9s cubic-bezier(0.34,1.4,0.64,1) both;
+  }
+
+  @keyframes sceneIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.94); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .hint {
+    color: rgba(255,255,255,0.28);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    animation: hintPulse 2.5s ease-in-out infinite;
+    transition: opacity 0.4s;
+  }
+  .hint.hidden { opacity: 0; animation: none; }
+  @keyframes hintPulse {
+    0%, 100% { opacity: 0.28; }
+    50% { opacity: 0.6; }
+  }
+
+  /* ===== WATCH OUTER ===== */
+  .watch-outer {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .band-top, .band-bottom {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 148px;
+    background: linear-gradient(180deg, #252528, #1c1c1e);
+    border: 1px solid #2e2e30;
+  }
+  .band-top {
+    bottom: 100%;
+    margin-bottom: -3px;
+    height: 130px;
+    border-radius: 8px 8px 0 0;
+  }
+  .band-bottom {
+    top: 100%;
+    margin-top: -3px;
+    height: 130px;
+    border-radius: 0 0 8px 8px;
+    background: linear-gradient(0deg, #252528, #1c1c1e);
+  }
+
+  /* band texture lines */
+  .band-top::after {
+    content: '';
+    position: absolute;
+    bottom: 20px; left: 12px; right: 12px;
+    height: 1px;
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 -8px 0 rgba(255,255,255,0.03), 0 -16px 0 rgba(255,255,255,0.03);
+  }
+  .band-bottom::before {
+    content: '';
+    position: absolute;
+    top: 20px; left: 12px; right: 12px;
+    height: 1px;
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 8px 0 rgba(255,255,255,0.03), 0 16px 0 rgba(255,255,255,0.03);
+  }
+
+  /* ===== WATCH CASE ===== */
+  .watch-case {
+    position: relative;
+    width: 206px;
+    height: 246px;
+    background: linear-gradient(145deg, #404042, #1c1c1e 50%, #2c2c2e);
+    border-radius: 62px;
+    border: 1px solid rgba(255,255,255,0.11);
+    box-shadow:
+      0 0 0 1px #0d0d0d,
+      0 50px 100px rgba(0,0,0,0.95),
+      inset 0 1px 0 rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  /* Digital Crown */
+  .watch-case::before {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 64px;
+    width: 10px;
+    height: 40px;
+    background: linear-gradient(180deg, #3e3e40, #2a2a2c, #3e3e40);
+    border-radius: 0 6px 6px 0;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-left: none;
+    box-shadow: 3px 0 6px rgba(0,0,0,0.6);
+  }
+
+  /* Side button */
+  .watch-case::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 118px;
+    width: 10px;
+    height: 24px;
+    background: linear-gradient(180deg, #3e3e40, #2a2a2c, #3e3e40);
+    border-radius: 0 4px 4px 0;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-left: none;
+    box-shadow: 3px 0 6px rgba(0,0,0,0.6);
+  }
+
+  /* ===== SCREEN ===== */
+  .screen {
+    width: 180px;
+    height: 220px;
+    border-radius: 52px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    background: #000;
+  }
+
+  /* ===== WATCH FACE ===== */
+  .watch-face {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 40% 25%, rgba(18,40,110,0.7) 0%, transparent 60%),
+      radial-gradient(ellipse at 65% 80%, rgba(8,55,80,0.5) 0%, transparent 55%),
+      #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 14px;
+  }
+
+  .complications-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .complication {
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    line-height: 1.2;
+  }
+  .complication strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .watch-time {
+    font-size: 58px;
+    font-weight: 100;
+    color: #fff;
+    letter-spacing: -4px;
+    line-height: 1;
+    margin: 0;
+  }
+
+  .watch-date {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.03em;
+    margin-top: 5px;
+    margin-bottom: 10px;
+  }
+
+  .complications-bottom {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 6px;
+  }
+
+  .comp-pill {
+    flex: 1;
+    background: rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 5px 7px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .comp-pill span { font-weight: 600; color: rgba(255,255,255,0.9); }
+
+  /* ===== NOTIFICATION OVERLAY ===== */
+  .notif-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    transform: translateY(105%);
+    transition: transform 0.55s cubic-bezier(0.34,1.25,0.64,1);
+  }
+
+  .notif-overlay.visible {
+    transform: translateY(0);
+  }
+
+  /* Colored header strip */
+  .notif-header-bar {
+    background: #DEFEA7;
+    padding: 14px 14px 11px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .notif-lego-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .notif-app-name {
+    font-size: 11px;
+    font-weight: 800;
+    color: #000;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .notif-app-sub {
+    font-size: 9.5px;
+    color: rgba(0,0,0,0.5);
+    margin-top: 1px;
+    font-weight: 500;
+  }
+
+  .notif-body {
+    flex: 1;
+    padding: 12px 14px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: #1c1c1e;
+    overflow: hidden;
+  }
+
+  .notif-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.25;
+  }
+
+  .notif-message {
+    font-size: 11px;
+    color: rgba(255,255,255,0.58);
+    line-height: 1.45;
+  }
+
+  .gold-callout {
+    background: rgba(255,215,0,0.1);
+    border-left: 2px solid #DEFEA7;
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 10.5px;
+    color: #DEFEA7;
+    font-weight: 600;
+    margin-top: 1px;
+  }
+
+  .notif-actions {
+    padding: 0 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    flex-shrink: 0;
+    background: #1c1c1e;
+  }
+
+  .btn-open {
+    background: #DEFEA7;
+    color: #000;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    border-radius: 22px;
+    padding: 9px 0;
+    width: 100%;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  .btn-open:active { opacity: 0.8; }
+
+  .btn-dismiss {
+    background: rgba(255,255,255,0.09);
+    color: rgba(255,255,255,0.55);
+    font-size: 12px;
+    font-weight: 500;
+    border: none;
+    border-radius: 22px;
+    padding: 8px 0;
+    width: 100%;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  .btn-dismiss:active { opacity: 0.7; }
+</style>
+</head>
+<body>
+
+<div class="watch-scene">
+
+  <div class="watch-outer">
+    <div class="band-top"></div>
+    <div class="band-bottom"></div>
+
+    <div class="watch-case">
+      <div class="screen" id="watchScreen">
+
+        <!-- Watch Face -->
+        <div class="watch-face">
+          <div class="complications-top">
+            <!-- Activity rings -->
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle cx="16" cy="16" r="13" fill="none" stroke="rgba(255,59,48,0.2)" stroke-width="3.5"/>
+              <circle cx="16" cy="16" r="13" fill="none" stroke="#ff3b30" stroke-width="3.5" stroke-dasharray="65 18" stroke-dashoffset="20" stroke-linecap="round"/>
+              <circle cx="16" cy="16" r="9" fill="none" stroke="rgba(52,199,89,0.2)" stroke-width="3.5"/>
+              <circle cx="16" cy="16" r="9" fill="none" stroke="#34c759" stroke-width="3.5" stroke-dasharray="44 12" stroke-dashoffset="14" stroke-linecap="round"/>
+              <circle cx="16" cy="16" r="5" fill="none" stroke="rgba(90,200,250,0.2)" stroke-width="3.5"/>
+              <circle cx="16" cy="16" r="5" fill="none" stroke="#5ac8fa" stroke-width="3.5" stroke-dasharray="25 7" stroke-dashoffset="8" stroke-linecap="round"/>
+            </svg>
+            <div class="complication">
+              <strong>12°</strong>
+              Hamburg
+            </div>
+            <div class="complication">
+              <strong>72</strong>
+              BPM
+            </div>
+          </div>
+
+          <div class="watch-time">9:41</div>
+          <div class="watch-date">Freitag, 10. April</div>
+
+          <div class="complications-bottom">
+            <div class="comp-pill">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <path d="M5 1v4l2.5 2.5" stroke="#5ac8fa" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="5" cy="5" r="4" stroke="rgba(255,255,255,0.25)" stroke-width="1" fill="none"/>
+              </svg>
+              <span>4 Std.</span>
+            </div>
+            <div class="comp-pill">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <rect x="1" y="4.5" width="7" height="4.5" rx="1" fill="#4cd964"/>
+                <rect x="2.5" y="2" width="4" height="3.5" rx="1" stroke="#4cd964" stroke-width="1" fill="none"/>
+                <rect x="8" y="6" width="1.5" height="2" rx="0.5" fill="#4cd964" opacity="0.5"/>
+              </svg>
+              <span>74%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notification Overlay (slides up on click) -->
+        <div class="notif-overlay" id="notifOverlay">
+          <div class="notif-header-bar">
+            <div>
+              <div class="notif-app-name">LEGO Newsfeed</div>
+              <div class="notif-app-sub">Persönlicher Feed · jetzt</div>
+            </div>
+          </div>
+
+          <div class="notif-body">
+            <div class="notif-title">Goldpreis auf neuem Allzeithoch!</div>
+            <div class="notif-message">Der Goldpreis hat heute ein historisches Rekordhoch erreicht.</div>
+            <div class="gold-callout">📈 Neues ATH erreicht</div>
+          </div>
+
+          <div class="notif-actions">
+            <button class="btn-open">Öffnen</button>
+            <button class="btn-dismiss" id="dismissBtn">Schließen</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="hint" id="hint">Auf den Bildschirm tippen</div>
+</div>
+
+<script>
+  const screen = document.getElementById('watchScreen');
+  const overlay = document.getElementById('notifOverlay');
+  const dismiss = document.getElementById('dismissBtn');
+  const hint = document.getElementById('hint');
+
+  screen.addEventListener('click', () => {
+    if (!overlay.classList.contains('visible')) {
+      overlay.classList.add('visible');
+      hint.classList.add('hidden');
+    }
+  });
+
+  dismiss.addEventListener('click', (e) => {
+    e.stopPropagation();
+    overlay.classList.remove('visible');
+    setTimeout(() => hint.classList.remove('hidden'), 600);
+  });
+</script>
+</body>
+</html>

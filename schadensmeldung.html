@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Schadensmeldung – LEGO Lebensversicherung</title>
+<title>Leistungsfallmeldung – LEGO Lebensversicherung</title>
 <link href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@400;500;600;700;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -195,7 +195,7 @@ body{display:flex!important;align-items:center!important;justify-content:center!
 .ios-tab{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#8e8e93;font-size:10px;font-family:-apple-system,sans-serif;font-weight:500;min-width:60px;position:relative;transition:color .15s}
 .ios-tab.active{color:#181348}
 .ios-tab-badge{position:absolute;top:-4px;right:2px;background:#fe4c1c;color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:-apple-system,sans-serif;border:2px solid rgba(248,248,251,.94)}
-@media(max-width:440px),(max-height:896px){body{padding:0!important;background:var(--bg0)!important;display:block!important;min-height:0}
+@media(max-width:440px){body{padding:0!important;background:var(--bg0)!important;display:block!important;min-height:0}
 .ios-shell{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none}.ios-di{display:none}}
 </style>
 </head>
@@ -219,7 +219,7 @@ body{display:flex!important;align-items:center!important;justify-content:center!
         &nbsp;Service
       </a>
     </div>
-    <div class="ios-nb-title">Schadensmeldung</div>
+    <div class="ios-nb-title">Leistungsfallmeldung</div>
     <div class="ios-nb-side right"></div>
   </div>
   <!-- Content -->
@@ -242,7 +242,7 @@ body{display:flex!important;align-items:center!important;justify-content:center!
         </a>
         <a class="nav-btn danger active" href="schadensmeldung.html">
           <div class="nav-icon-wrap"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2L2 15h14L9 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 7v4M9 13v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
-          <span class="nav-label">Schadensmeldung</span>
+          <span class="nav-label">Leistungsfallmeldung</span>
         </a>
         <div class="nav-sep"></div>
         <div class="toggle-btn" onclick="toggleSidebar()">
@@ -263,7 +263,7 @@ body{display:flex!important;align-items:center!important;justify-content:center!
             <div class="step-progress" id="step-progress" style="width:0%"></div>
             <div class="step-item active" id="si-0">
               <div class="step-circle">1</div>
-              <div class="step-label">Schaden auswählen</div>
+              <div class="step-label">Leistungsfall auswählen</div>
             </div>
             <div class="step-item" id="si-1">
               <div class="step-circle">2</div>
@@ -283,8 +283,8 @@ body{display:flex!important;align-items:center!important;justify-content:center!
           <div class="form-card" id="form-card">
             <!-- Step 1 -->
             <div id="step-content-0">
-              <div class="form-section-title">Welche Art von Schaden?</div>
-              <div class="form-section-sub">Wählen Sie den Schadentyp aus, der Ihrem Fall am nächsten kommt.</div>
+              <div class="form-section-title">Welche Art von Leistungsfall?</div>
+              <div class="form-section-sub">Wählen Sie den Leistungsfalltyp aus, der Ihrem Fall am nächsten kommt.</div>
               <div class="damage-type-grid">
                 <div class="damage-type-card selected" onclick="selectDamageType(this)">
                   <div class="dtc-icon" style="background:#ffe3e8">🤕</div>
@@ -311,8 +311,8 @@ body{display:flex!important;align-items:center!important;justify-content:center!
                 <label class="field-label">Betroffener Vertrag</label>
                 <select class="field-input">
                   <option>Risikolebensversicherung · Nr. LV-2021-00891</option>
-                  <option>Fondsgebundene LV · Nr. LV-2019-00342</option>
-                  <option>Berufsunfähigkeits-LV · Nr. BU-2022-00155</option>
+                  <option>Fondsgebundene RV · Nr. LV-2019-00342</option>
+                  <option>Berufsunfähigkeitsversicherung · Nr. BU-2022-00155</option>
                 </select>
               </div>
               <div class="btn-row">
@@ -323,11 +323,11 @@ body{display:flex!important;align-items:center!important;justify-content:center!
 
             <!-- Step 2 -->
             <div id="step-content-1" style="display:none">
-              <div class="form-section-title">Details zum Schadenfall</div>
+              <div class="form-section-title">Details zum Leistungsfall</div>
               <div class="form-section-sub">Bitte beschreiben Sie den Vorfall so genau wie möglich.</div>
               <div class="field-row">
                 <div class="field-group">
-                  <label class="field-label">Datum des Schadensereignisses</label>
+                  <label class="field-label">Datum des Leistungsfalls</label>
                   <input type="date" class="field-input" value="2026-04-07">
                 </div>
                 <div class="field-group">
@@ -408,8 +408,8 @@ body{display:flex!important;align-items:center!important;justify-content:center!
               <div class="form-section-title">Zusammenfassung & Absenden</div>
               <div class="form-section-sub">Bitte überprüfen Sie alle Angaben sorgfältig.</div>
               <div class="confirm-section">
-                <div class="confirm-section-title">Schadendetails</div>
-                <div class="confirm-row"><span class="confirm-key">Schadenart</span><span class="confirm-val">Unfall / Verletzung</span></div>
+                <div class="confirm-section-title">Leistungsfalldetails</div>
+                <div class="confirm-row"><span class="confirm-key">Leistungsfallart</span><span class="confirm-val">Unfall / Verletzung</span></div>
                 <div class="confirm-row"><span class="confirm-key">Betroffener Vertrag</span><span class="confirm-val">Risikolebensversicherung · LV-2021-00891</span></div>
                 <div class="confirm-row"><span class="confirm-key">Datum</span><span class="confirm-val">07. April 2026</span></div>
                 <div class="confirm-row"><span class="confirm-key">Unfallort</span><span class="confirm-val">Arbeitsplatz, Büro Dortmund</span></div>
@@ -440,7 +440,7 @@ body{display:flex!important;align-items:center!important;justify-content:center!
             <div id="step-content-success" style="display:none">
               <div class="success-card">
                 <div class="success-icon">✓</div>
-                <div class="success-title">Schadensmeldung eingegangen!</div>
+                <div class="success-title">Leistungsfallmeldung eingegangen!</div>
                 <div class="success-sub">Ihre Meldung wurde erfolgreich übermittelt. Wir melden uns innerhalb von 2 Werktagen bei Ihnen.</div>
                 <div class="success-ref">Aktenzeichen: #2026-1042</div>
                 <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">

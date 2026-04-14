@@ -189,7 +189,7 @@ body{display:flex!important;align-items:center!important;justify-content:center!
 .ios-tab{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#8e8e93;font-size:10px;font-family:-apple-system,sans-serif;font-weight:500;min-width:60px;position:relative;transition:color .15s}
 .ios-tab.active{color:#181348}
 .ios-tab-badge{position:absolute;top:-4px;right:2px;background:#fe4c1c;color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:-apple-system,sans-serif;border:2px solid rgba(248,248,251,.94)}
-@media(max-width:440px),(max-height:896px){body{padding:0!important;background:var(--bg0)!important;display:block!important;min-height:0}
+@media(max-width:440px){body{padding:0!important;background:var(--bg0)!important;display:block!important;min-height:0}
 .ios-shell{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none}.ios-di{display:none}}
 </style>
 </head>
@@ -330,11 +330,11 @@ body{display:flex!important;align-items:center!important;justify-content:center!
                 <div class="msg-av" style="background:linear-gradient(135deg,#16a34a,#4ade80)">LS</div>
                 <div class="msg-item-right">
                   <div class="msg-item-top">
-                    <span class="msg-sender-name">LEGO Schadenservice</span>
+                    <span class="msg-sender-name">LEGO Leistungsservice</span>
                     <span class="msg-time-stamp">Mo, 09:03</span>
                   </div>
-                  <div class="msg-subject">Schadenmeldung #2024-0847 – Abschluss</div>
-                  <div class="msg-preview-text">Wir freuen uns, Ihnen mitteilen zu können, dass Ihr Schadenfall abschließend…</div>
+                  <div class="msg-subject">Leistungsfallmeldung #2024-0847 – Abschluss</div>
+                  <div class="msg-preview-text">Wir freuen uns, Ihnen mitteilen zu können, dass Ihr Leistungsfall abschließend…</div>
                 </div>
                 <div class="unread-indicator"></div>
               </div>
@@ -394,7 +394,7 @@ body{display:flex!important;align-items:center!important;justify-content:center!
             <div class="detail-body">
               <div class="detail-text" id="detail-text">
                 <p>Sehr geehrter Herr Schmidt,</p>
-                <p>ich hoffe, Sie sind wohlauf. Im Rahmen unserer regelmäßigen Portfolioüberprüfung möchte ich Ihnen heute meine aktualisierten Empfehlungen für Ihre fondsgebundene Lebensversicherung (Vertrag Nr. LV-2019-00342) vorstellen.</p>
+                <p>ich hoffe, Sie sind wohlauf. Im Rahmen unserer regelmäßigen Portfolioüberprüfung möchte ich Ihnen heute meine aktualisierten Empfehlungen für Ihre fondsgebundene Rentenversicherung (Vertrag Nr. LV-2019-00342) vorstellen.</p>
                 <p>Angesichts der aktuellen Marktlage – insbesondere der leichten Korrektur im Technologiesektor und der stabilen Entwicklung europäischer Anleihen – empfehle ich eine moderate Anpassung Ihrer Fondsaufteilung. Konkret schlage ich vor, den Aktienanteil von derzeit 70 % auf 65 % zu reduzieren und den Anleihenanteil entsprechend auf 25 % zu erhöhen. Der Rohstoffanteil bliebe unverändert bei 10 %.</p>
                 <p>Mit freundlichen Grüßen,<br><strong>Torsten Brauer</strong><br>Persönlicher Berater, LEGO Lebensversicherung AG</p>
               </div>
@@ -454,7 +454,7 @@ const messages = [
     av: 'TB', avColor: 'linear-gradient(135deg,#181348,#3d35a0)',
     sender: 'Torsten Brauer', role: 'Persönlicher Berater · +49 231 88 40-512',
     date: 'Heute, 10:42 Uhr',
-    text: `<p>Sehr geehrter Herr Schmidt,</p><p>ich hoffe, Sie sind wohlauf. Im Rahmen unserer regelmäßigen Portfolioüberprüfung möchte ich Ihnen heute meine aktualisierten Empfehlungen für Ihre fondsgebundene Lebensversicherung (Vertrag Nr. LV-2019-00342) vorstellen.</p><p>Angesichts der aktuellen Marktlage – insbesondere der leichten Korrektur im Technologiesektor und der stabilen Entwicklung europäischer Anleihen – empfehle ich eine moderate Anpassung Ihrer Fondsaufteilung. Konkret schlage ich vor, den Aktienanteil von derzeit 70 % auf 65 % zu reduzieren und den Anleihenanteil entsprechend auf 25 % zu erhöhen. Der Rohstoffanteil bliebe unverändert bei 10 %.</p><p>Mit freundlichen Grüßen,<br><strong>Torsten Brauer</strong><br>Persönlicher Berater, LEGO Lebensversicherung AG</p>`,
+    text: `<p>Sehr geehrter Herr Schmidt,</p><p>ich hoffe, Sie sind wohlauf. Im Rahmen unserer regelmäßigen Portfolioüberprüfung möchte ich Ihnen heute meine aktualisierten Empfehlungen für Ihre fondsgebundene Rentenversicherung (Vertrag Nr. LV-2019-00342) vorstellen.</p><p>Angesichts der aktuellen Marktlage – insbesondere der leichten Korrektur im Technologiesektor und der stabilen Entwicklung europäischer Anleihen – empfehle ich eine moderate Anpassung Ihrer Fondsaufteilung. Konkret schlage ich vor, den Aktienanteil von derzeit 70 % auf 65 % zu reduzieren und den Anleihenanteil entsprechend auf 25 % zu erhöhen. Der Rohstoffanteil bliebe unverändert bei 10 %.</p><p>Mit freundlichen Grüßen,<br><strong>Torsten Brauer</strong><br>Persönlicher Berater, LEGO Lebensversicherung AG</p>`,
     reply: 'Ihre Antwort an Torsten Brauer…'
   },
   {
@@ -466,12 +466,12 @@ const messages = [
     reply: 'Ihre Antwort an das Service-Team…'
   },
   {
-    subject: 'Schadenmeldung #2024-0847 – Abschluss',
+    subject: 'Leistungsfallmeldung #2024-0847 – Abschluss',
     av: 'LS', avColor: 'linear-gradient(135deg,#16a34a,#4ade80)',
-    sender: 'LEGO Schadenservice', role: 'Schadenregulierung · schaden@lego-leben.de',
+    sender: 'LEGO Leistungsservice', role: 'Leistungsbearbeitung · schaden@lego-leben.de',
     date: 'Mo, 09:03 Uhr',
-    text: `<p>Sehr geehrter Herr Schmidt,</p><p>wir freuen uns, Ihnen mitteilen zu können, dass Ihr Schadenfall #2024-0847 abschließend bearbeitet wurde. Die Erstattungszahlung in Höhe von 1.840,00 € wurde heute auf Ihr hinterlegtes Konto überwiesen (IBAN DE89 2001 0020 0009 8765 43).</p><p>Sie erhalten in Kürze eine separate Bestätigungs-E-Mail mit allen Buchungsdetails. Vielen Dank für Ihre Geduld während der Bearbeitungszeit.</p><p>Mit freundlichen Grüßen,<br><strong>LEGO Schadenservice</strong></p>`,
-    reply: 'Ihre Antwort an den Schadenservice…'
+    text: `<p>Sehr geehrter Herr Schmidt,</p><p>wir freuen uns, Ihnen mitteilen zu können, dass Ihr Leistungsfall #2024-0847 abschließend bearbeitet wurde. Die Erstattungszahlung in Höhe von 1.840,00 € wurde heute auf Ihr hinterlegtes Konto überwiesen (IBAN DE89 2001 0020 0009 8765 43).</p><p>Sie erhalten in Kürze eine separate Bestätigungs-E-Mail mit allen Buchungsdetails. Vielen Dank für Ihre Geduld während der Bearbeitungszeit.</p><p>Mit freundlichen Grüßen,<br><strong>LEGO Leistungsservice</strong></p>`,
+    reply: 'Ihre Antwort an den Leistungsservice…'
   },
   {
     subject: 'Beratungstermin – Bestätigung',
